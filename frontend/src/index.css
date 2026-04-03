@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --color-critical: #dc2626;
-    --color-elevated: #d97706;
-    --color-normal: #16a34a;
+    --color-critical: #ef4444;
+    --color-elevated: #f59e0b;
+    --color-normal: #10b981;
   }
 
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+    @apply bg-gradient-to-br from-slate-950 via-[#0a0f1c] to-indigo-950 min-h-screen text-slate-100 font-sans antialiased selection:bg-indigo-500/30 selection:text-indigo-200;
   }
 
   * {
@@ -21,44 +21,49 @@
 
 @layer components {
   .badge-critical {
-    @apply bg-red-950 text-red-400 border border-red-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+    @apply bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(239,68,68,0.2)];
   }
   .badge-elevated {
-    @apply bg-amber-950 text-amber-400 border border-amber-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+    @apply bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.2)];
   }
   .badge-normal {
-    @apply bg-emerald-950 text-emerald-400 border border-emerald-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold px-2.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.2)];
   }
 
   .card {
-    @apply bg-slate-900 border border-slate-800 rounded-xl;
+    @apply bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-2xl shadow-xl shadow-black/20 overflow-hidden transition-all duration-300;
+  }
+
+  .card:hover {
+    @apply bg-slate-900/60 border-white/10 shadow-indigo-900/20;
   }
 
   .btn-primary {
-    @apply bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg transition-colors text-sm;
+    @apply bg-gradient-to-r from-indigo-600 to-sky-500 hover:from-indigo-500 hover:to-sky-400 text-white font-medium px-5 py-2.5 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95 text-sm;
   }
 
   .btn-ghost {
-    @apply text-slate-400 hover:text-slate-100 hover:bg-slate-800 px-3 py-2 rounded-lg transition-colors text-sm;
+    @apply text-slate-400 hover:text-white hover:bg-white/5 px-4 py-2 rounded-xl transition-all duration-200 text-sm;
   }
 
   .input {
-    @apply bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm
-           focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30
-           placeholder:text-slate-500 w-full transition-colors;
+    @apply bg-slate-950/50 backdrop-blur-sm border border-slate-800 text-slate-100 rounded-xl px-4 py-2.5 text-sm
+           focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20
+           placeholder:text-slate-600 w-full transition-all duration-300;
   }
 
   .select {
-    @apply bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm
-           focus:outline-none focus:border-sky-500 w-full transition-colors;
+    @apply bg-slate-950/50 backdrop-blur-sm border border-slate-800 text-slate-100 rounded-xl px-4 py-2.5 text-sm
+           focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20
+           w-full transition-all duration-300;
   }
 
   .pulse-critical {
-    animation: pulse-red 2s ease-in-out infinite;
+    animation: pulse-red 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
   @keyframes pulse-red {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
-    50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); background-color: rgba(239, 68, 68, 0.05); }
+    50% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); background-color: rgba(239, 68, 68, 0.15); }
   }
 }

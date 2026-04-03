@@ -115,6 +115,82 @@ router.patch('/:id/status', auth(), [
     res.status(500).json({ error: 'Server error' });
   }
 });
+// PATCH /api/requests/:id/quantity — update requested quantity
+router.patch('/:id/quantity', auth(['admin', 'dispatcher', 'operator']), [
+  body('requested_quantity').isFloat({ min: 0 }),
+], async (req, res) => {
+  const { id } = req.params;
+  const { requested_quantity } = req.body;
+  try {
+    const reqResult = await db.query(`SELECT * FROM supply_requests WHERE id = $1`, [id]);
+    const request = reqResult.rows[0];
+    if (!request) return res.status(404).json({ error: 'Not found' });
+
+    let newStatus = request.status;
+    let fulfilled_quantity = parseFloat(request.fulfilled_quantity || 0);
+    let new_requested_quantity = parseFloat(requested_quantity);
+
+    if (new_requested_quantity > fulfilled_quantity) {
+      if (newStatus === 'fulfilled') newStatus = 'in_progress';
+      
+      await db.query(`
+        UPDATE supply_requests
+        SET requested_quantity = $1, status = $2, updated_at = NOW()
+        WHERE id = $3
+      `, [new_requested_quantity, newStatus, id]);
+
+    } else if (new_requested_quantity < fulfilled_quantity) {
+      let excess = fulfilled_quantity - new_requested_quantity;
+      
+      const allocsResult = await db.query(`
+        SELECT * FROM allocations 
+        WHERE request_id = $1 
+        ORDER BY created_at DESC
+      `, [id]);
+
+      for (const alloc of allocsResult.rows) {
+        if (excess <= 0) break;
+        
+        let allocQty = parseFloat(alloc.quantity);
+        let toReturn = Math.min(excess, allocQty);
+        
+        await db.query(`
+          UPDATE stock SET quantity = quantity + $1, updated_at = NOW()
+          WHERE warehouse_id = $2 AND resource_id = $3
+        `, [toReturn, alloc.warehouse_id, alloc.resource_id]);
+
+        let updatedAllocQty = allocQty - toReturn;
+        if (updatedAllocQty <= 0) {
+          await db.query(`DELETE FROM allocations WHERE id = $1`, [alloc.id]);
+        } else {
+          await db.query(`UPDATE allocations SET quantity = $1 WHERE id = $2`, [updatedAllocQty, alloc.id]);
+        }
+        
+        excess -= toReturn;
+      }
+
+      fulfilled_quantity = new_requested_quantity;
+      newStatus = 'fulfilled';
+
+      await db.query(`
+        UPDATE supply_requests
+        SET requested_quantity = $1, fulfilled_quantity = $2, status = $3, updated_at = NOW()
+        WHERE id = $4
+      `, [new_requested_quantity, fulfilled_quantity, newStatus, id]);
+    } else {
+      await db.query(`
+        UPDATE supply_requests SET requested_quantity = $1, updated_at = NOW() WHERE id = $2
+      `, [new_requested_quantity, id]);
+    }
+
+    const finalResult = await db.query(`SELECT * FROM supply_requests WHERE id = $1`, [id]);
+    if (req.io) req.io.emit('request_updated', { id, status: newStatus, requested_quantity: new_requested_quantity, fulfilled_quantity });
+    res.json(finalResult.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // POST /api/requests/:id/allocate — smart allocation algorithm
 router.post('/:id/allocate', auth(['admin', 'dispatcher', 'operator']), async (req, res) => {
