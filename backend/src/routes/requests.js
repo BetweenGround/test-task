@@ -117,7 +117,7 @@ router.patch('/:id/status', auth(), [
 });
 
 // POST /api/requests/:id/allocate — smart allocation algorithm
-router.post('/:id/allocate', auth(['admin', 'dispatcher']), async (req, res) => {
+router.post('/:id/allocate', auth(['admin', 'dispatcher', 'operator']), async (req, res) => {
   const { id } = req.params;
   try {
     // Get request details

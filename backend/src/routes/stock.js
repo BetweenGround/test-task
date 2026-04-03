@@ -66,7 +66,7 @@ router.get('/nearest', auth(), async (req, res) => {
 });
 
 // PATCH /api/stock/:warehouse_id/:resource_id — update stock level
-router.patch('/:warehouse_id/:resource_id', auth(['admin', 'dispatcher']), [
+router.patch('/:warehouse_id/:resource_id', auth(['admin', 'dispatcher', 'operator']), [
   body('quantity').isFloat({ min: 0 }),
 ], async (req, res) => {
   const errors = validationResult(req);
