@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-critical: #dc2626;
+    --color-elevated: #d97706;
+    --color-normal: #16a34a;
+  }
+
+  body {
+    @apply bg-slate-950 text-slate-100 font-sans antialiased;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
+  }
+}
+
+@layer components {
+  .badge-critical {
+    @apply bg-red-950 text-red-400 border border-red-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+  }
+  .badge-elevated {
+    @apply bg-amber-950 text-amber-400 border border-amber-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+  }
+  .badge-normal {
+    @apply bg-emerald-950 text-emerald-400 border border-emerald-800/50 text-xs font-medium px-2 py-0.5 rounded-full;
+  }
+
+  .card {
+    @apply bg-slate-900 border border-slate-800 rounded-xl;
+  }
+
+  .btn-primary {
+    @apply bg-sky-600 hover:bg-sky-500 text-white font-medium px-4 py-2 rounded-lg transition-colors text-sm;
+  }
+
+  .btn-ghost {
+    @apply text-slate-400 hover:text-slate-100 hover:bg-slate-800 px-3 py-2 rounded-lg transition-colors text-sm;
+  }
+
+  .input {
+    @apply bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm
+           focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500/30
+           placeholder:text-slate-500 w-full transition-colors;
+  }
+
+  .select {
+    @apply bg-slate-800 border border-slate-700 text-slate-100 rounded-lg px-3 py-2 text-sm
+           focus:outline-none focus:border-sky-500 w-full transition-colors;
+  }
+
+  .pulse-critical {
+    animation: pulse-red 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+  }
+}
