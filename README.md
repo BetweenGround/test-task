@@ -179,21 +179,4 @@ npm run dev       # Старт на http://localhost:3000
 - **express-validator** — валідація всіх вхідних даних
 - **CORS** — whitelist тільки frontend URL
 
----
 
-## 🚀 Деплой
-
-Рекомендований варіант: **Railway** або **Render**
-
-```bash
-# Backend env vars:
-DATABASE_URL=postgresql://...
-JWT_SECRET=<random 64-char string>
-NODE_ENV=production
-FRONTEND_URL=https://your-frontend.vercel.app
-
-# Frontend: Vercel
-# Build command: npm run build
-# Output dir: dist
-# Env: VITE_API_URL=https://your-backend.railway.app
-```
